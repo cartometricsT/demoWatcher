@@ -53,43 +53,46 @@ map.on('click', function (e) {
 
 
 
-map.on('load', function () {
-  
-    
+  map.on('load', function () {
+
     var layers = map.getStyle().layers;
-    
-    
+  
     var controlsContainer = document.getElementById('layerControls');
-    
-    
-    var specificLayerIds = ['fraude', 'parcelas', 'piscinas catastro', 'piscinas no registradas', 'vegetacion', 'agua', 'imagen sat']; // los IDs de las capas específicas para botones
-    
-    
+  
+    var specificLayerIds = ['fraude', 'parcelas', 'piscinas catastro', 'piscinas no registradas', 'vegetacion', 'agua', 'imagen sat'];
+  
     layers.forEach(function(layer) {
-      if (specificLayerIds.includes(layer.id)) { 
-        
+      if (specificLayerIds.includes(layer.id)) {
+  
         // Crear un botón
         var button = document.createElement('button');
-        button.innerHTML = layer.id; 
-        
-       
+        button.innerHTML = layer.id;
+  
+        // Comprobar la visibilidad inicial de la capa y asignar la clase 'active' si es visible
+        var visibility = map.getLayoutProperty(layer.id, 'visibility');
+        if (visibility !== 'none') {
+          button.classList.add('active');
+        }
+  
+        // Asignar una función al botón
         button.addEventListener('click', function() {
-          
-          var visibility = map.getLayoutProperty(layer.id, 'visibility');
-          
-          
+  
+          // Cambiar la visibilidad de la capa y actualizar la clase del botón
           if (visibility === 'visible') {
             map.setLayoutProperty(layer.id, 'visibility', 'none');
+            button.classList.remove('active');
           } else {
             map.setLayoutProperty(layer.id, 'visibility', 'visible');
+            button.classList.add('active');
           }
+  
+          // Actualizar la variable 'visibility' para el próximo clic
+          visibility = map.getLayoutProperty(layer.id, 'visibility');
         });
-        
-        
+  
+        // Añadir el botón al contenedor
         controlsContainer.appendChild(button);
       }
     });
   });
-  
-
   
